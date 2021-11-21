@@ -69,7 +69,7 @@ function invalidAnotherCalculation (anotherCalculation) {
 }
 
 function calculations(numberOfCalculations) {
-  return numberOfCalculations === 1 ? 'calcuation' : 'calculations';
+  return numberOfCalculations === 1 ? 'calculation' : 'calculations';
 }
 
 function displayGoodbyeMessage(numberOfCalculations) {
