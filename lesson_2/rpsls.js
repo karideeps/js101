@@ -45,7 +45,7 @@ function displayScoreBoard(scoreBoard) {
 }
 
 function getPlayerChoice() {
-  prompt('Please type r for Rock, p for Paper, s for scissors, l for Lizard, sp for spock.');
+  prompt('Please enter r for Rock, p for Paper, s for scissors, l for Lizard, sp for spock.');
   return readlineSync.question().toLowerCase();
 }
 
