@@ -1,19 +1,32 @@
 const readlineSync = require('readline-sync');
 
-const VALID_CHOICES = {
-  r: 'rock',
-  p: 'paper',
-  s: 'scissors',
-  sp: 'spock',
-  l: 'lizard',
-};
+const CHOICES = {
 
-const WINNING_COMBOS = {
-  rock: ['scissors', 'lizard'],
-  paper: ['rock', 'spock'],
-  scissors: ['paper', 'lizard'],
-  lizard: ['spock', 'paper'],
-  spock: ['rock', 'scissors'],
+  rock: {
+    validChoices: ['rock', 'r'],
+    winsAgainst: ['scissors', 'lizard'],
+  },
+
+  paper: {
+    validChoices: ['paper', 'p'],
+    winsAgainst: ['rock', 'spock'],
+  },
+
+  scissors: {
+    validChoices: ['scissors', 's'],
+    winsAgainst: ['paper', 'lizard'],
+  },
+
+  lizard: {
+    validChoices: ['lizard', 'l'],
+    winsAgainst: ['spock', 'paper'],
+  },
+
+  spock: {
+    validChoices: ['spock', 'sp'],
+    winsAgainst: ['rock', 'scissors'],
+  },
+
 };
 
 const WINS_NEEDED = 3;
@@ -49,21 +62,42 @@ function getPlayerChoice() {
   return readlineSync.question().toLowerCase();
 }
 
+function findValidChoices() {
+  let validChoicesNestedArray = [];
+  for (let property in CHOICES) {
+    validChoicesNestedArray.push(CHOICES[property]['validChoices']);
+  }
+  return validChoicesNestedArray;
+}
+
 function validPlayerChoice(playerChoice) {
-  return Object.keys(VALID_CHOICES).includes(playerChoice);
+  return findValidChoices().flat().includes(playerChoice);
+}
+
+function convertPlayerChoice(playerChoice) {
+  let convertedPlayerChoice;
+
+  findValidChoices().forEach(function (validChoices, index) {
+    if (validChoices.includes(playerChoice)) {
+      convertedPlayerChoice = Object.keys(CHOICES)[index];
+    }
+  });
+
+  return convertedPlayerChoice;
 }
 
 function calculateComputerChoice() {
-  let index = Math.floor(Math.random() * Object.keys(VALID_CHOICES).length);
-  return VALID_CHOICES[Object.keys(VALID_CHOICES)[index]];
+  let index = Math.floor(Math.random() * Object.keys(CHOICES).length);
+  return Object.keys(CHOICES)[index];
 }
 
 function displayChoices(playerChoice, computerChoice) {
+  console.clear();
   prompt(`You chose ${playerChoice} and the computer chose ${computerChoice}.`);
 }
 
 function calculateRoundWinner(playerChoice, computerChoice) {
-  if (WINNING_COMBOS[playerChoice].includes(computerChoice)) {
+  if (CHOICES[playerChoice]['winsAgainst'].includes(computerChoice)) {
     return 'player';
   } else if (playerChoice === computerChoice) {
     return 'tie';
@@ -110,12 +144,12 @@ function displayMatchWinner(matchWinner, scoreBoard) {
 }
 
 function getPlayAgain() {
-  prompt('Would you like to play again? Enter y for yes or n for no.');
+  prompt('Would you like to play again? Enter "y" or "yes" for yes or "n" or "no" for no.');
   return readlineSync.question().toLowerCase();
 }
 
 function validPlayAgain(playAgain) {
-  return ['y', 'n'].includes(playAgain);
+  return ['y', 'n', 'yes', 'no'].includes(playAgain);
 }
 
 function displayGoodbyeMessage(matchesPlayed) {
@@ -132,7 +166,7 @@ let matchesPlayed = 0;
 
 let playAgain = 'y';
 
-while (playAgain === 'y') {
+while (playAgain === 'y' || playAgain === 'yes') {
 
   let scoreBoard = {
     roundsPlayed: 0,
@@ -155,11 +189,9 @@ while (playAgain === 'y') {
       playerChoice = getPlayerChoice();
     }
 
-    playerChoice = VALID_CHOICES[playerChoice];
+    playerChoice = convertPlayerChoice(playerChoice);
 
     let computerChoice = calculateComputerChoice();
-
-    console.clear();
 
     displayChoices(playerChoice, computerChoice);
 
