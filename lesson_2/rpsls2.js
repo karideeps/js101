@@ -54,7 +54,7 @@ function initializeScoreBoard() {
   };
 }
 
-function playMatch(scoreBoard) {
+function playMatch(scoreBoard, matchesPlayed) {
 
   if (matchesPlayed > 0) {
     console.clear();
@@ -77,6 +77,7 @@ function playMatch(scoreBoard) {
     iterateScoreBoard(scoreBoard, roundWinner);
 
   }
+
 }
 
 function noWinner(scoreBoard) {
@@ -214,9 +215,9 @@ let playAgain = 'y';
 
 while (playAgain === 'y' || playAgain === 'yes') {
 
-  let scoreBoard = initializeScoreBoard()
+  let scoreBoard = initializeScoreBoard();
 
-  playMatch(scoreBoard);
+  playMatch(scoreBoard, matchesPlayed);
 
   matchesPlayed += 1;
 
