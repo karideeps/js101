@@ -106,34 +106,22 @@ function initializeGameBoard() {
 
 function playRound(whoGoesFirst, gameBoard, scoreBoard) {
   displayGameBoard(gameBoard, scoreBoard);
-  if (whoGoesFirst === 'player') {
-    playerGoesFirst(gameBoard, scoreBoard);
-  } else {
-    computerGoesFirst(gameBoard, scoreBoard);
+  let currentPlayer = whoGoesFirst;
+  while (true) {
+    choosesSquare(currentPlayer, gameBoard);
+    displayGameBoard(gameBoard, scoreBoard);
+    if (detectWinner(gameBoard) || isBoardFull(gameBoard)) break;
+    currentPlayer = currentPlayer === 'player' ? 'computer' : 'player';
   }
   displayRoundWinner(gameBoard);
   iterateScoreBoard(scoreBoard, gameBoard);
 }
 
-function playerGoesFirst(gameBoard, scoreBoard) {
-  while (true) {
+function choosesSquare(currentPlayer, gameBoard) {
+  if (currentPlayer === 'player') {
     playerChoosesSquare(gameBoard);
-    displayGameBoard(gameBoard, scoreBoard);
-    if (detectWinner(gameBoard) || isBoardFull(gameBoard)) break;
+  } else {
     computerChoosesSquare(gameBoard);
-    displayGameBoard(gameBoard, scoreBoard);
-    if (detectWinner(gameBoard) || isBoardFull(gameBoard)) break;
-  }
-}
-
-function computerGoesFirst(gameBoard, scoreBoard) {
-  while (true) {
-    computerChoosesSquare(gameBoard);
-    displayGameBoard(gameBoard, scoreBoard);
-    if (detectWinner(gameBoard) || isBoardFull(gameBoard)) break;
-    playerChoosesSquare(gameBoard);
-    displayGameBoard(gameBoard, scoreBoard);
-    if (detectWinner(gameBoard) || isBoardFull(gameBoard)) break;
   }
 }
 
@@ -276,7 +264,7 @@ function displayMatchWinner(scoreBoard) {
   console.log(LONG_LINE);
   console.log(centerString('MATCH OVER', LONG_LINE.length));
   console.log(LONG_LINE);
-  if (scoreBoard.playerWins === 3) {
+  if (scoreBoard.playerWins === WINS_NEEDED) {
     prompt(`Congratulations, you beat the computer in ${scoreBoard.round} rounds!`);
   } else {
     prompt(`The computer beat you in ${scoreBoard.round} rounds. Better luck next time.`);
@@ -307,32 +295,25 @@ function totalMatchesPlayed(matchesPlayed) {
 displayWelcomeMessage();
 
 let matchesPlayed = 0;
-
 let playAgain = 'yes';
 
 while (['y', 'yes'].includes(playAgain)) {
 
   if (matchesPlayed > 0) console.clear();
-
   let scoreBoard = initializeScoreBoard();
-
   let whoGoesFirst = getWhoGoesFirst();
 
   while (scoreBoard.playerWins < WINS_NEEDED &&
          scoreBoard.computerWins < WINS_NEEDED) {
 
     let gameBoard = initializeGameBoard();
-
     playRound(whoGoesFirst, gameBoard, scoreBoard);
-
     whoGoesFirst = (whoGoesFirst === 'player') ? 'computer' : 'player';
-
     readline.question("=> Press Enter/Return to continue...");
 
   }
 
   displayMatchWinner(scoreBoard);
-
   matchesPlayed += 1;
 
   playAgain = getPlayAgain();
