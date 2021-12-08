@@ -342,9 +342,9 @@ while (PLAY_AGAIN_CHOICES_YES.includes(playAgain)) {
 
     let deck = initializeDeck();
     shuffleDeck(deck);
+
     let playersHand = [];
     let computersHand = [];
-
     dealCards(playersHand, STARTING_HAND, deck);
     dealCards(computersHand, STARTING_HAND, deck);
 
