@@ -24,14 +24,11 @@ const CARDS_AND_VALUES = {
 
 function initializeDeck() {
   let deck = [];
-
   Object.keys(SUITS).forEach(suit => {
     Object.keys(CARDS_AND_VALUES).forEach (card => {
       deck.push([card, SUITS[suit]]);
     });
   });
-
-
   return deck;
 }
 
