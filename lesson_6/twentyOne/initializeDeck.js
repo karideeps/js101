@@ -18,7 +18,7 @@ const CARDS_AND_VALUES = {
   J: 10,
   Q: 10,
   K: 10,
-  A: [11, 1]
+  A: 11
 }
 
 
@@ -26,7 +26,7 @@ function initializeDeck() {
   let deck = [];
   Object.keys(SUITS).forEach(suit => {
     Object.keys(CARDS_AND_VALUES).forEach (card => {
-      deck.push([card, SUITS[suit]]);
+      deck.push({face: card, suit: SUITS[suit]});
     });
   });
   return deck;
@@ -53,12 +53,6 @@ Algorithm:
 
 */
 
-
-
-
-
-
-
 let deck = initializeDeck();
-shuffleDeck(deck);
+//shuffleDeck(deck);
 console.log(deck);

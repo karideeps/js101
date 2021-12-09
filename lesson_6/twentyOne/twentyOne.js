@@ -14,11 +14,11 @@ const COMPUTER_HIT_LIMIT = 17;
 
 const MAX_TOTAL = 21;
 
-const VALID_HIT_CHOICES = ['h', 'hit'];
+const HIT_CHOICES = ['h', 'hit'];
 
-const VALID_STAY_CHOICES = ['s', 'stay'];
+const STAY_CHOICES = ['s', 'stay'];
 
-const VALID_PLAYER_CHOICES = VALID_HIT_CHOICES.concat(VALID_STAY_CHOICES);
+const VALID_PLAYER_CHOICES = HIT_CHOICES.concat(STAY_CHOICES);
 
 const PLAY_AGAIN_CHOICES_YES = ['y', 'yes'];
 
@@ -48,7 +48,7 @@ const CARDS_AND_VALUES = {
   J: 10,
   Q: 10,
   K: 10,
-  A: 11, // or 1. This is accounted for in `total()`
+  A: 11, // or 1. This is accounted for in `correctForAces()`
 };
 
 const RULES = {
@@ -124,7 +124,7 @@ function initializeDeck() {
   let deck = [];
   Object.keys(SUITS).forEach(suit => {
     Object.keys(CARDS_AND_VALUES).forEach (card => {
-      deck.push([card, SUITS[suit]]);
+      deck.push({face: card, suit: SUITS[suit]});
     });
   });
   return deck;
@@ -155,13 +155,13 @@ function displayScoreBoard(scoreBoard) {
 
 function displayPlayersHand(playersHand) {
   let totalPlayersHand = total(playersHand);
-  playersHand = playersHand.map(card => card.join(''));
+  playersHand = playersHand.map(card => `${card.face}${card.suit}`);
   console.log(`Your hand: ${joinOr(playersHand)} (total: ${totalPlayersHand})`);
 }
 
 function displayComputersHand(computersHand, status) {
   let totalComputersHand = total(computersHand);
-  computersHand = computersHand.map(card => card.join(''));
+  computersHand = computersHand.map(card => `${card.face}${card.suit}`);
   if (status === 'hidden') {
     computersHand[computersHand.length - 1] = 'unknown';
     console.log(`Computer's hand: ${joinOr(computersHand)}`);
@@ -182,16 +182,18 @@ function joinOr(array) {
 }
 
 function total(hand) {
-  let arrayOfCards = hand.map(card => card[0]);
+  let arrayOfCards = hand.map(card => card.face);
   let numberOfAces = arrayOfCards.filter(card => card === 'A').length;
   let arrayOfValues = arrayOfCards.map(card => CARDS_AND_VALUES[card]);
   let sum = arrayOfValues.reduce((sum, currentValue) => sum + currentValue);
+  return correctForAces(sum, numberOfAces);
+}
 
+function correctForAces(sum, numberOfAces) {
   while (sum > MAX_TOTAL && numberOfAces > 0) {
     sum -= 10;
     numberOfAces -= 1;
   }
-
   return sum;
 }
 
@@ -235,7 +237,7 @@ function playersTurn(playersHand, computersHand, deck, scoreBoard) {
       break;
     }
     let playerChoice = getPlayerChoice();
-    if (VALID_STAY_CHOICES.includes(playerChoice)) break;
+    if (STAY_CHOICES.includes(playerChoice)) break;
     dealCards(playersHand,CARDS_DEALT_PER_HIT, deck);
   }
 }
